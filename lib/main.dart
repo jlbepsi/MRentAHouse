@@ -6,6 +6,9 @@ import 'package:locations/models/typehabitat.dart';
 import 'package:locations/share/location_style.dart';
 import 'package:locations/share/location_text_style.dart';
 
+import 'services/habitation_service.dart';
+import 'views/habitation_list.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -27,25 +30,16 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  final HabitationService service = HabitationService();
   final String title;
+  late List<TypeHabitat> _typehabitats;
+  late List<Habitation> _habitations;
 
-  MyHomePage({required this.title, Key? key}) : super(key: key);
-  final _typehabitats = [
-    TypeHabitat(1, "Maison"),
-    TypeHabitat(2, "Appartement")
-  ];
-  final _habitations = Iterable.generate(
-      6,
-      (index) => Habitation(
-            index,
-            index == 1 ? "maison.png" : "appartement.png",
-            "Libelle $index",
-            "Adresse $index",
-            (index * 5) % 2,
-            (100 * (1 + (index / 10))).toInt(),
-            (500 * (1 + (index / 10))).toDouble(),
-          )).toList();
-
+  MyHomePage({required this.title, Key? key})
+      : super(key: key) {
+    _habitations = service.getHabitationsTop10();
+    _typehabitats = service.getTypeHabitats();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +50,7 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 30),
-            _buildTypeHabitat(),
+            _buildTypeHabitat(context),
             SizedBox(height: 20),
             _buildDerniereLocation(context),
           ],
@@ -65,7 +59,7 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  _buildTypeHabitat() {
+  _buildTypeHabitat(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(6.0),
       height: 100,
@@ -73,13 +67,13 @@ class MyHomePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List.generate(
           _typehabitats.length,
-          (index) => _buildHabitat(_typehabitats[index]),
+          (index) => _buildHabitat(context, _typehabitats[index]),
         ),
       ),
     );
   }
 
-  _buildHabitat(TypeHabitat typeHabitat) {
+  _buildHabitat(BuildContext context, TypeHabitat typeHabitat) {
     var icon = Icons.house;
     switch (typeHabitat.id) {
       // case 1: House
@@ -97,7 +91,15 @@ class MyHomePage extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.0),
         ),
         margin: EdgeInsets.all(8.0),
-        child: Row(
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HabitationList(typeHabitat.id == 1),
+                ));
+          },
+          child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -112,7 +114,7 @@ class MyHomePage extends StatelessWidget {
             )
           ],
         ),
-      ),
+      ),),
     );
   }
 

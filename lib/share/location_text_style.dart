@@ -39,4 +39,10 @@ class LocationTextStyle {
   static final titleboldTextStyle =
   baseTextStyle.copyWith(
     color: Colors.white,fontWeight: FontWeight.bold, fontSize: 21,);
+
+  static const errorTextStyle = TextStyle(
+    color: Colors.red,
+    fontWeight: FontWeight.bold,
+    fontSize: 22.0,
+  );
 }

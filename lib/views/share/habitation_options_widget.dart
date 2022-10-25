@@ -1,0 +1,23 @@
+
+import 'package:flutter/material.dart';
+
+import '../../models/habitation.dart';
+import 'habitation_option.dart';
+
+class HabitationOptionsWidget extends StatelessWidget {
+  final Habitation _habitation;
+
+  const HabitationOptionsWidget(this._habitation, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        HabitationOption(Icons.group, "${_habitation.nbpersonnes} personnes"),
+        HabitationOption(Icons.bed, "${_habitation.chambres} chambres"),
+        HabitationOption(Icons.fit_screen, "${_habitation.superficie} m²"),
+      ],
+    );
+  }
+}
